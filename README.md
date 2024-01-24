@@ -10,7 +10,8 @@ composer require --dev phpyh/psalm-tester
 
 ### Write a test in phpt format
 
-tests/array_values.phpt
+`tests/array_values.phpt`
+
 ```phpt
 --FILE--
 <?php
@@ -31,14 +32,15 @@ Trace on line %d: $_list: non-empty-list<%s>
 
 ### Create a test suite
 
-tests/PsalmTest.php
+`tests/PsalmTest.php`
+
 ```php
 <?php
 
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
-use StaticAnalysisTester\PsalmTester;
-use StaticAnalysisTester\StaticAnalysisTest;
+use PHPyh\PsalmTester\PsalmTester;
+use PHPyh\PsalmTester\StaticAnalysisTest;
 
 final class PsalmTest extends TestCase
 {
