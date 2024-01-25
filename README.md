@@ -13,9 +13,9 @@ Test Psalm via phpt files!
 composer require --dev phpyh/psalm-tester
 ```
 
-## Usage
+## Basic usage
 
-### Write a test in phpt format
+### 1. Write a test in phpt format
 
 `tests/array_values.phpt`
 
@@ -37,7 +37,7 @@ To avoid hardcoding error details, you can use `EXPECTF`:
 Trace on line %d: $_list: non-empty-list<%s>
 ```
 
-### Create a test suite
+### 2. Add a test suite
 
 `tests/PsalmTest.php`
 
@@ -60,4 +60,29 @@ final class PsalmTest extends TestCase
         $this->psalmTester->test(StaticAnalysisTest::fromPhptFile($phptFile));
     }
 }
+```
+
+## Passing different arguments to Psalm
+
+By default `PsalmTester` runs Psalm with `--no-progress --no-diff --config=`[psalm.xml](src/psalm.xml).
+
+You can change this at the `PsalmTester` level:
+
+```php
+use PHPyh\PsalmTester\PsalmTester;
+
+PsalmTester::create(
+    defaultArguments: '--no-progress --no-cache --config=my_default_config.xml',
+);
+```
+
+or for each test individually using `--ARGS--` section:
+
+```phpt
+--ARGS--
+--no-progress --config=my_special_config.xml
+--FILE--
+...
+--EXPECT--
+...
 ```
