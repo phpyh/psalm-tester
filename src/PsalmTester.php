@@ -23,22 +23,37 @@ final class PsalmTester
         string $defaultArguments = '--no-progress --no-diff --config=' . __DIR__ . '/psalm.xml',
         ?string $temporaryDirectory = null,
     ): self {
-        if ($psalmPath === null) {
-            $installationPath = InstalledVersions::getInstallPath('vimeo/psalm') ?? throw new \RuntimeException('Psalm is not installed. Please, install or provide path to Psalm bin.');
-            $psalmPath = $installationPath . '/psalm';
+        return new self(
+            psalmPath: $psalmPath ?? self::findPsalm(),
+            defaultArguments: $defaultArguments,
+            temporaryDirectory: self::resolveTemporaryDirectory($temporaryDirectory),
+        );
+    }
+
+    private static function findPsalm(): string
+    {
+        if (!method_exists(InstalledVersions::class, 'getInstallPath')) {
+            throw new \RuntimeException('Cannot find Psalm installation path. Please, explicitly specify path to Psalm binary.');
         }
 
+        $installPath = InstalledVersions::getInstallPath('vimeo/psalm');
+
+        if ($installPath === null) {
+            throw new \RuntimeException('Cannot find Psalm installation path. Please, explicitly specify path to Psalm binary.');
+        }
+
+        return $installPath . '/psalm';
+    }
+
+    private static function resolveTemporaryDirectory(?string $temporaryDirectory): string
+    {
         $temporaryDirectory ??= sys_get_temp_dir() . '/psalm_test';
 
         if (!is_dir($temporaryDirectory) && !mkdir($temporaryDirectory, recursive: true)) {
             throw new \RuntimeException(sprintf('Failed to create temporary directory %s.', $temporaryDirectory));
         }
 
-        return new self(
-            psalmPath: $psalmPath,
-            defaultArguments: $defaultArguments,
-            temporaryDirectory: $temporaryDirectory,
-        );
+        return $temporaryDirectory;
     }
 
     public function test(PsalmTest $test): void
