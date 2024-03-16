@@ -15,6 +15,7 @@ use PHPUnit\Framework\Constraint\StringMatchesFormatDescription;
  */
 final class PsalmTest
 {
+    private const TEST = 'TEST';
     private const FILE = 'FILE';
     private const ARGS = 'ARGS';
     private const EXPECT = 'EXPECT';
